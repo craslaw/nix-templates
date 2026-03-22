@@ -21,14 +21,19 @@
           ];
 
           shellHook = ''
-            # Auto-create and activate venv if requirements exist
+            # Auto-create and activate venv
             if [ ! -d .venv ]; then
               echo "Creating venv..."
               virtualenv .venv
             fi
             source .venv/bin/activate
 
-            if [ -f requirements.txt ]; then
+            # Install dependencies based on project type
+            if [ -f pyproject.toml ]; then
+              echo "Installing dependencies from pyproject.toml..."
+              pip install -q -e .
+            elif [ -f requirements.txt ]; then
+              echo "Installing dependencies from requirements.txt..."
               pip install -q -r requirements.txt
             fi
           '';
